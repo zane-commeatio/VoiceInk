@@ -1,5 +1,5 @@
 # Define a directory for dependencies in the user's home folder
-DEPS_DIR := $(HOME)/VoiceInk-Dependencies
+DEPS_DIR := $(PWD)/VoiceInk-Dependencies
 WHISPER_CPP_DIR := $(DEPS_DIR)/whisper.cpp
 FRAMEWORK_PATH := $(WHISPER_CPP_DIR)/build-apple/whisper.xcframework
 
@@ -31,7 +31,9 @@ whisper:
 		else \
 			(cd $(WHISPER_CPP_DIR) && git pull); \
 		fi; \
-		cd $(WHISPER_CPP_DIR) && ./build-xcframework.sh; \
+		if [ -f "macos-only.patch" ]; then \
+			cd $(WHISPER_CPP_DIR) && git apply ../macos-only.patch; \
+			cd $(WHISPER_CPP_DIR) && ./build-xcframework.sh; \
 	else \
 		echo "whisper.xcframework already built in $(DEPS_DIR), skipping build"; \
 	fi
